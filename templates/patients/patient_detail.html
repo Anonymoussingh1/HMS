@@ -1,16 +1,42 @@
 {% extends 'base.html' %}
-{% block title %}{{ patient }}{% endblock %}
+
 {% block content %}
-<h2>{{ patient }}</h2>
-<p>Phone: {{ patient.phone }}</p>
-<p>Email: {{ patient.email }}</p>
-<p>DOB: {{ patient.dob }}</p>
-<p>Address: {{ patient.address }}</p>
+<h2>{{ patient.first_name }} {{ patient.last_name }}</h2>
+
+<p><strong>Phone:</strong> {{ patient.phone }}</p>
+<p><strong>Email:</strong> {{ patient.email }}</p>
+<p><strong>Date of Birth:</strong> {{ patient.dob }}</p>
+<p><strong>Address:</strong> {{ patient.address }}</p>
+
+<a class="btn btn-warning" href="{% url 'patient_edit' patient.id %}">
+    Edit
+</a>
+<a class="btn btn-danger" href="{% url 'patient_delete' patient.id %}">
+    Delete
+</a>
+
+<hr>
 
 <h3>Medical Records</h3>
-<ul>
-  {% for r in patient.records.all %}
-    <li>{{ r.created_at }} - {{ r.diagnosis }} - {{ r.notes|truncatechars:100 }}</li>
-  {% empty %}<li>No records</li>{% endfor %}
+
+<a class="btn btn-success mb-3" href="{% url 'medicalrecord_add' patient.id %}">
+    + Add Medical Record
+</a>
+
+<ul class="list-group">
+  {% for r in records %}
+    <li class="list-group-item">
+        <strong>{{ r.created_at|date:"M d, Y" }}</strong>
+        — {{ r.diagnosis }}<br>
+        {{ r.notes|truncatechars:100 }}
+        <br>
+        <a href="{% url 'medicalrecord_detail' r.id %}">
+            View Details
+        </a>
+    </li>
+  {% empty %}
+    <li class="list-group-item">No medical records yet.</li>
+  {% endfor %}
 </ul>
+
 {% endblock %}
